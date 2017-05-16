@@ -1,5 +1,7 @@
 # [fit] Writing Code
+<br>
 # [fit] That Writes Code
+<br>
 # [fit] That Writes Code
 
 ![right filtered](assets/turtles.png)
@@ -16,13 +18,13 @@
 
 # [fit] Not this Stark
 
-![left filtered](assets/house-stark.tiff)
+![left](assets/house-stark.tiff)
 
 ---
 
-# [fit] Not this Stark Either
+# [fit] Not this Stark either
 
-![left filtered](assets/iron-man.tiff)
+![left](assets/iron-man.tiff)
 
 ---
 
@@ -31,10 +33,10 @@
 ---
 
 # [fit] $$1.$$ Metaprogramming
-
+<br>
 # [fit] $$2.$$ Data Transformation
-
-# [fit] $$3.$$ For Pure Fun
+<br>
+# [fit] $$3.$$ Just For Fun :smile:
 
 ---
 
@@ -46,9 +48,9 @@
 
 # Rails
 
-### ActiveRecord Attributes
+## ActiveRecord Attributes
 
-### Association Methods
+## Association Methods
 
 ---
 
@@ -77,34 +79,37 @@ class String
   end
 end
  
-"gavin".is_gavin?
-"ironman".is_gavin?
-"ironman".is_ironman?
+"gavin".is_gavin?  # => true
+"ironman".is_gavin? # => false
+"ironman".is_ironman? # => true
 ```
 
 ---
 
 # [fit] That all ya got?
 
-![fit left filtered](assets/cool-story-bro.png)
+![fit left](assets/cool-story-bro.png)
 
 ---
 
 ```ruby
 puts String.instance_methods.count
+# => 174
  
 class String
-  File.readlines("/usr/share/dict/words").each do |line|
-    line.chomp!
+  File.readlines("/usr/share/dict/words", chomp: true).each do |line|
     define_method("#{line}?") do
       self == line
     end
-  end
+  end; nil
 end
- 
+
 string = "silly"
- 
-puts "Is it silly to have #{String.instance_methods.count} methods in String? => #{"silly".silly?}"
+
+puts "Is it silly to have
+     #{String.instance_methods.count}
+     methods in String? => #{"silly".silly?}"
+# => Is it silly to have 236052 methods in String? => true
 ```
 
 ---
@@ -133,11 +138,11 @@ puts "Is it silly to have #{String.instance_methods.count} methods in String? =>
 
 ---
 
-# [fit] Y U NO?
-
+# Y U NO?
+<br>
 - Transform code in two parts
-- New system still under development, gives a chance to try API
-- Can run parts of generated script in irb
+- Can try out API while new system under development
+- Can run parts of generated script in `irb`
 - Code is standalone
 
 ---
@@ -159,16 +164,15 @@ puts "Is it silly to have #{String.instance_methods.count} methods in String? =>
 ```ruby
 Player.all.each do |player|
   unless player.video_resolution
-    puts %{# Player #{player.id} has no video_resolution}
+    puts %{Player #{player.id} has no video_resolution}
     next
   end
 
   width, height = player.video_resolution.match(/(\d+)x(\d+).*/).captures
 
   puts %{
-    display_configuration = DisplayConfiguration.where(
-       screen_resolution_x: #{width}, screen_resolution_y: #{height},
-       screen_array_x: 1, screen_array_y: 1, orientation: "LANDSCAPE").first
+    display_configuration = DisplayConfiguration.find_by(
+       screen_resolution_x: #{width}, screen_resolution_y: #{height})
 
     raise "no display config" unless display_configuration
     Player.find(#{player.id}).
@@ -229,12 +233,40 @@ end
 
 ---
 
+> Whitespace ignores any non-whitespace characters. Only spaces, tabs and linefeeds have meaning.
+
+---
+
+![fit](assets/whitespace.png)
+
+---
+
+> Brainf*ck - The language consists of only eight simple commands and an instruction pointer.
+
+---
+
+> While it is fully Turing-complete, it is not intended for practical use, but to challenge and amuse programmers.
+
+---
+
+<br>
+<br>
+<br>
+
+```
+++++++++[>++++[>++>+++>+++>+<<<<-]>
++>+>->>+[<]<-]>>.>---.+++++++..+++.
+>>.<-.<.+++.------.--------.>>+.>++.
+```
+
+---
+
 > Piet is a language ... whose programs are bitmaps that look like abstract art.
 -- *you had me at hello*
 
 ---
 
-# [fit] Piet Rules
+# [fit] Piet
 
 - Direction pointer
 - Codel chooser
@@ -259,6 +291,14 @@ end
 ---
 
 # [fit] *Start with* Ruby
+
+---
+
+# Unbeatable Algorithm
+
+<br>
+
+## Minimax
 
 ---
 
@@ -295,22 +335,121 @@ end
 
 ---
 
-# [fit] How To
+# [fit] Automate All The Things
 
-- Automate Both Players
-- Computer Plays Unbeatable Move
-- Opponent Plays All Possible Moves
-- Make a Database
+- Automate both players
+- Computer plays unbeatable move
+- Opponent plays *ALL* possible moves
+- Recursively follow Each possibility
+- Make a "database"
+
+---
+
+# [fit] Algorithm Model
+
+Define a base Algorithm class
+
+```ruby
+class Algorithm
+  attr_accessor :symbol
+
+  def initialize(symbol)
+    @symbol = symbol
+  end
+
+  def competitor_symbol
+    @competitor_symbol ||= Board.other_player(symbol)
+  end
+end
+```
+
+---
+
+# [fit] Subclasses Define `moves`
+
+- Runner will ask each algorithm for an array of `moves` given a `board`
+
+```ruby
+class PlaysAllPossibleMoves < Algorithm
+  def moves(board)
+    board.empty_spaces
+  end
+end
+```
+
+---
+
+# [fit] Minimax Algorithm
+
+```ruby
+class UnbeatableTicTacToe < Algorithm
+  def moves(board)
+    score = min_max_score(board, true)
+
+    Array(score.space)
+  end
+  
+  Score = Struct.new(:space, :value)
+  NO_SCORE = Score.new(nil,nil)
+end
+```
+
+---
+
+```ruby
+class UnbeatableTicTacToe < Algorithm
+  def min_max_score(board, is_me)
+    current_symbol = is_me ? symbol : competitor_symbol
+
+    board.empty_spaces.map { |space|
+      new_board = board.with_move(space, current_symbol)
+
+      case
+      # There is a winner, give the appropriate points
+      when new_board.won_by?(current_symbol)
+        Score.new(space, is_me ? 1 : -1)
+      # It is a tie, give 0 points
+      when new_board.full?
+        Score.new(space, 0)
+      # Figure out the value by asking for the min_max
+      # of the board we generated but flip which player
+      # we are inquiring about
+      else
+        Score.new(space, min_max_score(new_board, !is_me).value)
+      end
+    }.send(is_me ? :max_by : :min_by, &:value) || NO_SCORE
+  end
+end
+```
+
+---
+
+# [fit] How Do You Test This?
+
+
+---
+
+# [fit] How Do You Test This?
+
+- Pit two unbeatable algorithms against each other
+- Fail the test if either of them win!
+- Requires the game runner to:
+ - allow for pluggable algorithms
+ - have a callback after each move to check win state
 
 ---
 
 # [fit] Output the database
 
+- Test code should also generate a database!
 - Export as `YAML` hash
 - Key is the board state
+- Board state is represented as an array
 - Value is the best move for the computer
 
 ---
+
+![right filtered fit](assets/tictactoe-numbered.png)
 
 ```ruby
 ? !ruby/object:Board
@@ -325,12 +464,7 @@ end
   - .
   - .
 : 4
-
 ```
-
----
-
-# [fit] Run Ruby code to produce database
 
 ---
 
@@ -343,6 +477,12 @@ end
 ## I'd still be writing the
 ## Piet code if MS Paint
 ## was my editor
+
+---
+
+![fit right](http://static.boredpanda.com/blog/wp-content/uploads/2017/05/microsoft-paint-ebook-illustrations-camp-redblood-pat-hines-3.png)
+
+http://www.boredpanda.com/microsoft-paint-ebook-illustrations-camp-redblood-pat-hines/
 
 ---
 
@@ -384,6 +524,10 @@ end
 
 ---
 
+# But we have THREE options for each square
+
+<br>
+
 # [fit] `X`, `O`, `blank`
 
 ---
@@ -398,7 +542,11 @@ end
 
 ---
 
-```
+# Lets look at a sample board
+
+```ruby
+# least significant bit
+
 O => 1
 O => 1
 . => 0
@@ -408,29 +556,25 @@ X => 2
 . => 0
 . => 0
 . => 0
+
+# most significant bit
 ```
 
-$$000020011_3$$
+#### $$000020011_3$$
 
-$$0\cdot3^8 + 0\cdot3^7 + 0\cdot3^6 + 0\cdot3^5 + 2\cdot3^4 + 0\cdot3^3 + 0\cdot3^2 + 1\cdot3^1 + 1\cdot3^0$$
+#### $$0\cdot3^8 + 0\cdot3^7 + 0\cdot3^6 + 0\cdot3^5 + 2\cdot3^4 + 0\cdot3^3 + 0\cdot3^2 + 1\cdot3^1 + 1\cdot3^0$$
 
 *$$166$$*
 
 ---
 
-# [fit] Turn the YAML file
-# [fit] into hundreds of `if` statements
-
----
-
-# [fit] Boards
+# Boards
 
 <br>
 
 - Represented as base `10` integers
 - Decoded into base `3` for manipulation
-- Printing
-- Updating
+- Code to support printing and updating
 
 ---
 
@@ -471,7 +615,7 @@ exponent(position)
   exp = 1;
   for(i=0; i < position; i++)
   {
-    exp = exp *3;
+    exp = exp * 3;
   }
 
   return exp;
@@ -480,33 +624,37 @@ exponent(position)
 
 ---
 
-# [fit] BRAINS
+![left filtered](assets/zombie.jpg)
+
+# [fit] Braiiiins...
+
+^ https://www.flickr.com/photos/bradmontgomery/7274622050/in/photolist-c5QkG7-d5C1NU-6P6hNd-6YudxV-a7CN5s-pJZbB-2BC4d2-cEc9qG-9RsSHC-6U95n7-pCbGTK-6Y8vGV-cYFx2y-xrnH-9UNwSB-6Am9xC-9ahCKG-xroR-9mwZ5m-oJprYn-6Y8vAk-aN2Mg-9UNwHp-6Ybrzd-FafCm-6Y9Kci-6YfVgb-6Y7oVD-6YbrKW-c5Qn3u-6Yye9h-9QeRNF-6Y9KdH-6YbrgU-6Y7oHk-6YbrkW-5B66fq-6Y7p6z-6YbrML-6Y7oCp-6Y9Kii-xrp2-gRsBdf-8QxvEb-6Y9K68-6Ybrv9-xroB-c5Qrus-JobGf-99xQvg
 
 ---
 
-# [fit] Hundreds of `if` statements
+# [fit] Turn the YAML file
+# [fit] into huge `if` statements
 
 ---
 
 ```
-get_computer_move_going_first(board)
-{
-  new_move = 0;
-  if (board == 0)    { new_move =  0; }
-  if (board == 5)    { new_move =  3; }
-  if (board == 68)   { new_move =  4; }
-  if (board == 473)  { new_move =  6; }
-  if (board == 959)  { new_move =  5; }
-  if (board == 2417) { new_move =  5; }
-  if (board == 6791) { new_move =  5; }
-  if (board == 140)  { new_move =  6; }
-  if (board == 302)  { new_move =  4; }
-  if (board == 1193) { new_move =  8; }
-  if (board == 2651) { new_move =  2; }
-  if (board == 3398) { new_move =  8; }
+if ((board == 0)) { new_move = 0; }
+
+if ((board == 5) || (board == 11) || (board == 1799) ||
+    (board == 3743) || (board == 8117) || (board == 2615) ||
+    (board == 8123) || (board == 8285) || (board == 10229)) { new_move = 3; }
+  
+if ((board == 68) || (board == 302) || (board == 788) ||
+    (board == 2246) || (board == 6620) || (board == 794) || (board == 2252) ||
+    (board == 7115) || (board == 7841) || (board == 9299) || (board == 44) ||
+    (board == 266) || (board == 746) || (board == 2210) || (board == 8069)) { new_move = 4; }
 ```
 
+# One of these statements for each possible new move (0..8)
+
 ---
+
+![right filtered](assets/owl.jpg)
 
 # [fit] Write Remainder of Code
 
@@ -519,7 +667,7 @@ get_computer_move_going_first(board)
 
 ---
 
-# [fit] Go to my github for the code
+# [fit] Go to my [github](https://github.com/gstark/tic-tac-toe) for the code
 
 ---
 
@@ -532,6 +680,10 @@ get_computer_move_going_first(board)
 ---
 
 ![autoplay](assets/piet.mov)
+
+---
+
+# DEMO
 
 ---
 
