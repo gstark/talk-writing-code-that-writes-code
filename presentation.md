@@ -77,6 +77,10 @@ class String
       super
     end
   end
+
+  def respond_to_missing?(method_name, include_all = false)
+    method_name =~ /\Ais_(.+)\?\Z/ || super
+  end
 end
  
 "gavin".is_gavin?  # => true
@@ -130,7 +134,7 @@ puts "Is it silly to have
 
 - Write code in the old system that outputs Ruby
 - Run database migrations
-- Run ruby script to modify/create data
+- Run Ruby script to modify/create data
 
 ---
 
@@ -239,6 +243,8 @@ end
 
 ![fit](assets/whitespace.png)
 
+^ https://en.wikipedia.org/wiki/Whitespace_(programming_language)
+
 ---
 
 > Brainf*ck - The language consists of only eight simple commands and an instruction pointer.
@@ -258,6 +264,16 @@ end
 +>+>->>+[<]<-]>>.>---.+++++++..+++.
 >>.<-.<.+++.------.--------.>>+.>++.
 ```
+
+---
+
+![fit](assets/cat-keyboard.gif)
+
+^ http://cdn-media-2.lifehack.org/wp-content/files/2014/09/tumblr_lp9tthzs0f1qz7hmlo1_400.gif
+
+---
+
+# [fit] Piet
 
 ---
 
@@ -340,8 +356,13 @@ end
 - Automate both players
 - Computer plays unbeatable move
 - Opponent plays *ALL* possible moves
-- Recursively follow Each possibility
-- Make a "database"
+- Recursively follow each possibility
+- Make a $$database$$
+
+---
+
+# [fit] Algorithm
+![](assets/algore.gif)
 
 ---
 
@@ -426,16 +447,27 @@ end
 
 # [fit] How Do You Test This?
 
+---
+# [fit] How Do You Test This?
+
+![](assets/head-to-head.gif)
+
+<br>
+<br>
+<br>
+<br>
+<br>
+
+# [fit] Pit two unbeatable algorithms against each other
 
 ---
 
 # [fit] How Do You Test This?
 
-- Pit two unbeatable algorithms against each other
-- Fail the test if either of them win!
+- :no_entry_sign: if either of them :trophy:!
 - Requires the game runner to:
- - allow for pluggable algorithms
- - have a callback after each move to check win state
+ - Allow for pluggable algorithms
+ - Have a callback after each move to check win state
 
 ---
 
@@ -522,6 +554,10 @@ http://www.boredpanda.com/microsoft-paint-ebook-illustrations-camp-redblood-pat-
 ## and
 ## base *`2`*
 
+![right filtered](assets/5aa9_binary_people_tee_fb.jpg)
+
+^ http://www.thinkgeek.com/images/products/zoom/5aa9_binary_people_tee_fb.jpg
+
 ---
 
 # But we have THREE options for each square
@@ -545,8 +581,6 @@ http://www.boredpanda.com/microsoft-paint-ebook-illustrations-camp-redblood-pat-
 # Lets look at a sample board
 
 ```ruby
-# least significant bit
-
 O => 1
 O => 1
 . => 0
@@ -556,8 +590,6 @@ X => 2
 . => 0
 . => 0
 . => 0
-
-# most significant bit
 ```
 
 #### $$000020011_3$$
@@ -565,6 +597,14 @@ X => 2
 #### $$0\cdot3^8 + 0\cdot3^7 + 0\cdot3^6 + 0\cdot3^5 + 2\cdot3^4 + 0\cdot3^3 + 0\cdot3^2 + 1\cdot3^1 + 1\cdot3^0$$
 
 *$$166$$*
+
+---
+
+# [fit] BTW
+
+```ruby
+"000020011".to_i(3) # => 166
+```
 
 ---
 
@@ -635,6 +675,9 @@ exponent(position)
 # [fit] Turn the YAML file
 # [fit] into huge `if` statements
 
+- Later versions just write out the if statements directly
+- Skips the need to output and then re-read YAML files
+
 ---
 
 ```
@@ -703,6 +746,6 @@ if ((board == 68) || (board == 302) || (board == 788) ||
 
 <br>
 
-## [fit] *Questions?*
+## [fit] Questions:question:
 
 ---
