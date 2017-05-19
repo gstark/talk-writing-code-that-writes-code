@@ -79,7 +79,7 @@ class String
   end
 
   def respond_to_missing?(method_name, include_all = false)
-    method_name =~ /\Ais_(.+)\?\Z/ || super
+    !!method_name =~ /\Ais_(.+)\?\Z/ || super
   end
 end
  
@@ -217,7 +217,7 @@ end
 
 <br>
 
-# [fit] bit.ly/kdGNxG
+# [fit] https://vimeo.com/25958308
 
 #### *... but not right now ...*
 
