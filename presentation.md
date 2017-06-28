@@ -151,51 +151,6 @@ puts "Is it silly to have
 
 ---
 
-# [fit] Shut up
-# [fit] and convert my data
-
-![filtered right](assets/shut-up-and-take-my-money.tiff)
-
----
-
-# Shut up and convert my data
-
-- ActiveRecord use of models
-- Iterate and use puts to output Ruby
-
----
-
-```ruby
-Player.all.each do |player|
-  unless player.video_resolution
-    puts %{Player #{player.id} has no video_resolution}
-    next
-  end
-
-  width, height = player.video_resolution.match(/(\d+)x(\d+).*/).captures
-
-  puts %{
-    display_configuration = DisplayConfiguration.find_by(
-       screen_resolution_x: #{width}, screen_resolution_y: #{height})
-
-    raise "no display config" unless display_configuration
-    Player.find(#{player.id}).
-		  update_attributes(display_configuration_id: display_configuration.id)
-  }
-end
-```
-
----
-
-# [fit] Upgrade Process
-
-- Run export script on old version
-- Run all migrations (about 35)
-- Run ruby script
-- Profit
-
----
-
 # [fit] $$3.$$ Just For Fun
 
 ---
@@ -474,9 +429,7 @@ end
 # [fit] Output the database
 
 - Test code should also generate a database!
-- Export as `YAML` hash
 - Key is the board state
-- Board state is represented as an array
 - Value is the best move for the computer
 
 ---
@@ -554,7 +507,7 @@ http://www.boredpanda.com/microsoft-paint-ebook-illustrations-camp-redblood-pat-
 ## and
 ## base *`2`*
 
-![right filtered](assets/5aa9_binary_people_tee_fb.jpg)
+![right](assets/5aa9_binary_people_tee_fb.jpg)
 
 ^ http://www.thinkgeek.com/images/products/zoom/5aa9_binary_people_tee_fb.jpg
 
@@ -672,11 +625,8 @@ exponent(position)
 
 ---
 
-# [fit] Turn the YAML file
+# [fit] Turn the database file
 # [fit] into huge `if` statements
-
-- Later versions just write out the if statements directly
-- Skips the need to output and then re-read YAML files
 
 ---
 
