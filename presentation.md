@@ -1,4 +1,5 @@
 # [fit] Writing Code
+
 <br>
 # [fit] That Writes Code
 <br>
@@ -11,8 +12,6 @@
 ---
 
 # [fit] Gavin Stark
-
-## [fit] Instructor: The Iron Yard Tampa Bay
 
 ---
 
@@ -30,13 +29,22 @@
 
 # [fit] Why write code that writes code?
 
+^ We write a lot of code
+^ Tools make this experience better, faster, safer, and more enjoyable
+^ Industry takes leaps forward when we improve tools
+^ Rails
+
 ---
 
-# [fit] $$1.$$ Metaprogramming
-<br>
-# [fit] $$2.$$ Data Transformation
-<br>
-# [fit] $$3.$$ Just For Fun :smile:
+^ autoscale: true
+
+# $$1.$$ Metaprogramming
+
+# $$2.$$ Data Transformation
+
+# $$3.$$ Optimizations
+
+# $$4.$$ Just For Fun :smile:
 
 ---
 
@@ -51,6 +59,9 @@
 ## ActiveRecord Attributes
 
 ## Association Methods
+
+^ We get "methods" for all of our AR attributes and associations for "free"
+^ Is this good, bad? Convention over configuration
 
 ---
 
@@ -68,18 +79,32 @@
 
 ---
 
+```ruby
+"gavin".is_gavin?  # => true
+"ironman".is_gavin? # => false
+"ironman".is_ironman? # => true
+```
+
+^ This is what I'd like
+^ Maybe you've seen this before `Rails.env.development?`
+^ [https://api.rubyonrails.org/classes/ActiveSupport/StringInquirer.html](StringInquirer)
+
+---
+
+`Ruby` :rocket: :mask:
+
 ```Ruby
 class String
   def method_missing(method_name, *args)
-    if method_name =~ /\Ais_(.+)\?\Z/
+    if method_name =~ /\Ais_(\w+)\?\Z/
       self == $1
     else
       super
     end
   end
 
-  def respond_to_missing?(method_name, include_all = false)
-    !!method_name =~ /\Ais_(.+)\?\Z/ || super
+  def respond_to_missing?(method_name, include_private = false)
+    !!(method_name =~ /\Ais_(\w+)\?\Z/) || super
   end
 end
  
@@ -98,22 +123,31 @@ end
 
 ```ruby
 puts String.instance_methods.count
-# => 174
- 
+# => 183
+```
+
+---
+
+```ruby
 class String
   File.readlines("/usr/share/dict/words", chomp: true).each do |line|
     define_method("#{line}?") do
       self == line
     end
-  end; nil
+  end; nil # nil is just here to make it nicer to copy/paste to irb
 end
+```
 
+---
+
+```ruby
 string = "silly"
 
 puts "Is it silly to have
-     #{String.instance_methods.count}
-     methods in String? => #{"silly".silly?}"
-# => Is it silly to have 236052 methods in String? => true
+#{String.instance_methods.count}
+methods in String? => #{"silly".silly?}"
+
+# => Is it silly to have 236061 methods in String? => true
 ```
 
 ---
@@ -124,34 +158,87 @@ puts "Is it silly to have
 
 # [fit] Major Data Migration
 
-- 1:N Data
-- Migrate Data
-- Generate new data / structures
+- New system was splitting data models
+- Logical changes to how data was stored
 
 ---
 
 # Code -> Code
 
-- Write code in the old system that outputs Ruby
-- Run database migrations
-- Run Ruby script to modify/create data
-
----
-
-![fit](assets/y-u-no.tiff)
+1. Run code in the old system that outputs Ruby statements
+2. Switch to new codebase
+3. Run new system database migrations
+4. Run Ruby script to modify/create data
 
 ---
 
 # Y U NO?
+
 <br>
 - Transform code in two parts
 - Can try out API while new system under development
-- Can run parts of generated script in `irb`
+- Can run parts of script in `irb`/`rails console` to validate
 - Code is standalone
 
 ---
 
-# [fit] $$3.$$ Just For Fun
+# Right Solution?
+
+^ Not in all cases
+^ Worked well in this case
+
+---
+
+# [fit] $$3.$$ Optimization
+
+**MJIT**
+
+> "Method Based Just-in-Time Compiler"
+
+---
+
+# [fit] Non-JIT Ruby
+
+```
+
+Ruby
+└── YARV Instructions
+    └── Ruby VM
+        └── Execution
+
+```
+
+---
+
+# [fit] :handwave: MJIT
+
+```
+
+Ruby
+└── Intermedidiate Form
+    └── C Code
+        └── Compiler
+            └── Object Files
+                └── Execution
+
+```
+
+---
+
+# [fit] Is this faster?
+
+The answer, like many things, is **it depends**.
+
+Mircobenchmarks: Sure
+Big Monolithic Rails App: TBD
+
+---
+
+# [fit] But for today ...
+
+---
+
+# [fit] $$4.$$ Just For Fun
 
 ---
 
@@ -161,20 +248,26 @@ puts "Is it silly to have
 
 # [fit] New languages will *change your brain*
 
+^ New patterns
+^ New approaches
+^ New ways of thinking
+^ Can bring those back and merge with current langauge style
+
 ---
 
-# [fit] Code for *fun*
+# [fit] Code for _fun_
 
 ---
 
 # [fit] If you :heart: languages
+
 # [fit] go watch this video
 
 <br>
 
-# [fit] https://vimeo.com/25958308
+# [fit] [https://vimeo.com/25958308](https://vimeo.com/25958308)
 
-#### *... but not right now ...*
+#### _... but not right now ..._
 
 ---
 
@@ -184,11 +277,11 @@ puts "Is it silly to have
 
 # [fit] Whitespace
 
-# [fit] Brainf*ck
+# [fit] Brain\*\*\*\*
 
 # [fit] Shakespeare
 
-# [fit] *Piet*
+# [fit] _Piet_
 
 ---
 
@@ -202,7 +295,7 @@ puts "Is it silly to have
 
 ---
 
-> Brainf*ck - The language consists of only eight simple commands and an instruction pointer.
+> Brain\*\*\*\* - The language consists of only eight simple commands and an instruction pointer.
 
 ---
 
@@ -215,9 +308,12 @@ puts "Is it silly to have
 <br>
 
 ```
+
 ++++++++[>++++[>++>+++>+++>+<<<<-]>
 +>+>->>+[<]<-]>>.>---.+++++++..+++.
->>.<-.<.+++.------.--------.>>+.>++.
+
+> > .<-.<.+++.------.--------.>>+.>++.
+
 ```
 
 ---
@@ -228,12 +324,32 @@ puts "Is it silly to have
 
 ---
 
+# Write an interpreter!
+
+Good lanugage to learn to write interpreters!
+
+---
+
+# Shakespeare
+
+> A programming language created with the design goal to make the source code resemble Shakespeare plays.
+
+## [http://shakespearelang.sourceforge.net/report/shakespeare/#sec:hello](http://shakespearelang.sourceforge.net/report/shakespeare/#sec:hello)
+
+---
+
 # [fit] Piet
+
+^ Named after Piet Mondrian
 
 ---
 
 > Piet is a language ... whose programs are bitmaps that look like abstract art.
--- *you had me at hello*
+> -- _you had me at hello_
+
+---
+
+![fit](assets/piet-program.tiff)
 
 ---
 
@@ -243,25 +359,26 @@ puts "Is it silly to have
 - Codel chooser
 - Stack based
 - Integers only
+- Character output via Unicode value
 - Commands (equal to variation in hue/lightness)
 
 ---
 
-![fit](assets/piet-program.tiff)
-
----
-
-# [fit] *Unbeatable* Tic-Tac-Toe
-
-![fit](assets/tic-tac-toe.png)
+# [fit] _Unbeatable_ Tic-Tac-Toe
 
 ---
 
 ![fit](assets/spoilers.tiff)
 
+^ Unbeatable Tic Tac Toe was the entrance coding challenge for a local software company.
+
+^ While the company _mostly_ used Ruby, you could submit in any language you wanted.
+
+^ **Challenge Accepted!**
+
 ---
 
-# [fit] *Start with* Ruby
+# [fit] _Start with_ Ruby
 
 ---
 
@@ -275,7 +392,7 @@ puts "Is it silly to have
 
 # [fit] Unbeatable Algorithm
 
-### *(... hand wavy ...)*
+### `:handwave:`
 
 - Recursively follow each possible move
 - Assign positive points if I win
@@ -286,13 +403,13 @@ puts "Is it silly to have
 
 # [fit] Unbeatable Algorithm
 
-### *(... hand wavy ...)*
+### `:handwave:`
 
 <br>
 
 - At each level of recursion:
-- Choose the *maximum* score possible for my moves
-- Choose the *minimum* score possible for their moves
+- Choose the _maximum_ score possible for my moves
+- Choose the _minimum_ score possible for their moves
 
 ---
 
@@ -304,19 +421,24 @@ puts "Is it silly to have
 
 ## Make a database of every possible game board
 
+^ Piet is a simple language
+^ Encode as much of the logic as I can in data
+^ Data types not very flexible, we'll come back to that
+
 ---
 
 # [fit] Automate All The Things
 
 - Automate both players
 - Computer plays unbeatable move
-- Opponent plays *ALL* possible moves
+- Opponent plays _ALL_ possible moves
 - Recursively follow each possibility
 - Make a $$database$$
 
 ---
 
 # [fit] Algorithm
+
 ![](assets/algore.gif)
 
 ---
@@ -336,6 +458,8 @@ class Algorithm
   def competitor_symbol
     @competitor_symbol ||= Board.other_player(symbol)
   end
+
+  # Other code here...
 end
 ```
 
@@ -344,6 +468,8 @@ end
 # [fit] Subclasses Define `moves`
 
 - Runner will ask each algorithm for an array of `moves` given a `board`
+
+---
 
 ```ruby
 class PlaysAllPossibleMoves < Algorithm
@@ -355,18 +481,13 @@ end
 
 ---
 
-# [fit] Minimax Algorithm
-
 ```ruby
 class UnbeatableTicTacToe < Algorithm
   def moves(board)
-    score = min_max_score(board, true)
+    score = min_max_score(board)
 
     Array(score.space)
   end
-  
-  Score = Struct.new(:space, :value)
-  NO_SCORE = Score.new(nil,nil)
 end
 ```
 
@@ -374,23 +495,24 @@ end
 
 ```ruby
 class UnbeatableTicTacToe < Algorithm
-  def min_max_score(board, is_me)
+  def min_max_score(board, is_me = true)
     current_symbol = is_me ? symbol : competitor_symbol
 
     board.empty_spaces.map { |space|
+      # Generate a new board, but with a new move
       new_board = board.with_move(space, current_symbol)
 
       case
-      # There is a winner, give the appropriate points
       when new_board.won_by?(current_symbol)
+        # There is a winner, give the appropriate points
         Score.new(space, is_me ? 1 : -1)
-      # It is a tie, give 0 points
       when new_board.full?
+        # It is a tie, give 0 points
         Score.new(space, 0)
-      # Figure out the value by asking for the min_max
-      # of the board we generated but flip which player
-      # we are inquiring about
       else
+        # Figure out the value by asking for the min_max
+        # of the board we generated but flip which player
+        # we are inquiring about
         Score.new(space, min_max_score(new_board, !is_me).value)
       end
     }.send(is_me ? :max_by : :min_by, &:value) || NO_SCORE
@@ -403,6 +525,7 @@ end
 # [fit] How Do You Test This?
 
 ---
+
 # [fit] How Do You Test This?
 
 ![](assets/head-to-head.gif)
@@ -413,24 +536,25 @@ end
 <br>
 <br>
 
-# [fit] Pit two unbeatable algorithms against each other
+# [fit] Pit the algorithms against each other
 
 ---
 
 # [fit] How Do You Test This?
 
-- :no_entry_sign: if either of them :trophy:!
+- Have the "plays all moves" player compete against the "unbeatable"
+- :no_entry_sign: if the "plays all moves" ever :trophy:!
 - Requires the game runner to:
- - Allow for pluggable algorithms
- - Have a callback after each move to check win state
+  - Allow for pluggable algorithms
+  - Have a callback after each move to check win state
 
 ---
 
 # [fit] Output the database
 
-- Test code should also generate a database!
-- Key is the board state
-- Value is the best move for the computer
+- Test code should also generate a database (a hash)
+  - `Key` is the board state
+  - `Value` is the best move for the computer
 
 ---
 
@@ -460,14 +584,16 @@ end
 ---
 
 ## I'd still be writing the
-## Piet code if MS Paint
+
+## Piet code if Photoshop
+
 ## was my editor
 
 ---
 
 ![fit right](http://static.boredpanda.com/blog/wp-content/uploads/2017/05/microsoft-paint-ebook-illustrations-camp-redblood-pat-hines-3.png)
 
-http://www.boredpanda.com/microsoft-paint-ebook-illustrations-camp-redblood-pat-hines/
+[http://www.boredpanda.com/microsoft-paint-ebook-illustrations-camp-redblood-pat-hines/](http://www.boredpanda.com/microsoft-paint-ebook-illustrations-camp-redblood-pat-hines/)
 
 ---
 
@@ -476,14 +602,16 @@ http://www.boredpanda.com/microsoft-paint-ebook-illustrations-camp-redblood-pat-
 ---
 
 ## Piet Script
-## *and*
+
+## _and_
+
 ## Piet Assembly
 
 ---
 
 # [fit] Piet Script
 
-- Like a *lame* version of `C`
+- Like a _worse_ version of `C`
 - Methods
 - `if` and `while`
 - Variables
@@ -493,7 +621,8 @@ http://www.boredpanda.com/microsoft-paint-ebook-illustrations-camp-redblood-pat-
 
 # [fit] Piet Script
 
-## [fit] *No* hashes, *no* data structures
+## [fit] _No_ hashes, _no_ data structures
+
 ## [fit] So how do we represent boards/decisions?
 
 ---
@@ -502,10 +631,13 @@ http://www.boredpanda.com/microsoft-paint-ebook-illustrations-camp-redblood-pat-
 
 <br>
 
-## We all know
-## base *`10`*
+## We know about
+
+## base _`10`_
+
 ## and
-## base *`2`*
+
+## base _`2`_
 
 ![right](assets/5aa9_binary_people_tee_fb.jpg)
 
@@ -521,12 +653,14 @@ http://www.boredpanda.com/microsoft-paint-ebook-illustrations-camp-redblood-pat-
 
 ---
 
-# [fit] *Base 3*
+# [fit] _Base 3_
 
 ---
 
 # `"." -> 0`
+
 # `"O" -> 1`
+
 # `"X" -> 2`
 
 ---
@@ -534,22 +668,22 @@ http://www.boredpanda.com/microsoft-paint-ebook-illustrations-camp-redblood-pat-
 # Lets look at a sample board
 
 ```ruby
-O => 1
-O => 1
-. => 0
-. => 0
-X => 2
-. => 0
-. => 0
-. => 0
-. => 0
+O => 1      # 1's position (low)
+O => 1      # 3's position
+. => 0      # 9's position
+. => 0      # ...
+X => 2      # ...
+. => 0      # ...
+. => 0      # ...
+. => 0      # ...
+. => 0      # 6561's position (high)
 ```
 
 #### $$000020011_3$$
 
 #### $$0\cdot3^8 + 0\cdot3^7 + 0\cdot3^6 + 0\cdot3^5 + 2\cdot3^4 + 0\cdot3^3 + 0\cdot3^2 + 1\cdot3^1 + 1\cdot3^0$$
 
-*$$166$$*
+_$$166$$_
 
 ---
 
@@ -575,6 +709,32 @@ X => 2
 
 ---
 
+# Conversions
+
+Need a way to convert a base `10` number into components of a base 3
+
+---
+
+[.build-lists: true]
+
+- How we do this in base 10?
+
+- Example: `42578`
+
+- To get the `8` we integer divide by 1 modulo `10`
+- To get the `7` we integer divide by 10 (`4257`) and modulo `10`
+- To get the `5` we integer divide by 100 (`425`) and modulo `10`
+- To get the `2` we integer divide by 1000 (`42`) and modulo `10`
+- To get the `4` we integer divide by 10000 (`4`) and modulo `10`
+
+- > See the powers of `10` ?
+
+---
+
+# Except here we are raising to powers of `3` and module `3`
+
+---
+
 ```
 print_board(board)
 {
@@ -583,7 +743,7 @@ print_board(board)
   print_piece((board/exponent(2))%3);
   asm { @"\r\n" }
   print_piece((board/exponent(3))%3);
-  print_piece((board/exponent(4)%3));
+  print_piece((board/exponent(4))%3);
   print_piece((board/exponent(5))%3);
   asm { @"\r\n" }
   print_piece((board/exponent(6))%3);
@@ -626,6 +786,7 @@ exponent(position)
 ---
 
 # [fit] Turn the database file
+
 # [fit] into huge `if` statements
 
 ---
@@ -636,7 +797,7 @@ if ((board == 0)) { new_move = 0; }
 if ((board == 5) || (board == 11) || (board == 1799) ||
     (board == 3743) || (board == 8117) || (board == 2615) ||
     (board == 8123) || (board == 8285) || (board == 10229)) { new_move = 3; }
-  
+
 if ((board == 68) || (board == 302) || (board == 788) ||
     (board == 2246) || (board == 6620) || (board == 794) || (board == 2252) ||
     (board == 7115) || (board == 7841) || (board == 9299) || (board == 44) ||
@@ -664,11 +825,11 @@ if ((board == 68) || (board == 302) || (board == 788) ||
 
 ---
 
-# [fit] Piet Script -> *Compiler* -> Piet Assembly -> *Assembler* -> Image
+# [fit] Piet Script -> _Compiler_ -> Piet Assembly -> _Assembler_ -> Image
 
 ---
 
-# [fit] *Image* -> Piet Runner
+# [fit] _Image_ -> Piet Runner
 
 ---
 
@@ -684,11 +845,11 @@ if ((board == 68) || (board == 302) || (board == 788) ||
 
 <br>
 
-`https://github.com/gstark/tic-tac-toe/blob/master/piet/tic-tac-toe.png`
+[https://github.com/gstark/tic-tac-toe/blob/master/piet/tic-tac-toe.png](https://github.com/gstark/tic-tac-toe/blob/master/piet/tic-tac-toe.png)
 
 <br>
 
-`https://github.com/gstark/tic-tac-toe`
+[https://github.com/gstark/tic-tac-toe](https://github.com/gstark/tic-tac-toe)
 
 ---
 
